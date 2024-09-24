@@ -1,0 +1,1 @@
+route 8.8.8.0/24 reject;

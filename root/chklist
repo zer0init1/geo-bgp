@@ -1,0 +1,15 @@
+#!/bin/bash
+cd /root/blacklist/list
+wget -N https://raw.githubusercontent.com/ipverse/rir-ip/master/country/ua/ipv4-aggregated.txt
+
+old=$(cat /root/blacklist/md5.txt);
+new=$(cat /root/blacklist/list/*.txt | md5sum | head -c 32);
+if [ "$old" != "$new" ]
+then
+
+cat /root/blacklist/list/ipv4-aggregated.txt | sed '/^#/d' | sed 's_.*_route & reject;_' > /etc/bird/ipv4-aggregated.txt
+#cat /root/blacklist/list/subnet.lst | sed 's_.*_route & reject;_' > /etc/bird/subnet.txt
+/usr/sbin/birdc configure;
+#logger "RKN list reconfigured";
+#echo $new > /root/blacklist/md5.txt;
+fi
